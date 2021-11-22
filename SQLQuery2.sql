@@ -94,29 +94,32 @@ VALUES
 (14, 14, 5),
 (15, 15, 5)
 
--- Janrların siyajısı üçün select query -  bu querydə janrların öz columnlarəından əlavə həmin janrda neçə film oduğu da görsənməlidir
-SELECT Genre.Name,(SELECT COUNT(Genre.Id) FROM Genre Where Movies.GenreId = Genre.Id) AS 'Say' From Genre,Movies WHERE Movies.GenreId = Genre.Id
---elave drama ki gorek dramalarin sayi 2 olacaqmi
+--(OKAY)Janrların siyajısı üçün select query -  bu querydə janrların öz columnlarəından əlavə həmin janrda neçə film oduğu da görsənməlidir
+
+-- bir drama elave edirem ki gorek dramalarin sayi 2 olacaqmi
 INSERT INTO Movies
 VALUES
 (6,'The GodFather: Part  II',1 , 5)
-SELECT * FROM Movies
 
---sehvlik var nese
+SELECT DISTINCT Genre.Name,(SELECT COUNT(Movies.GenreId)FROM Movies WHERE Genre.Id = Movies.GenreId) AS 'Filmlerin sayi' 
+FROM Genre, Movies
 
---Bütün Actors datalarını select edən query - hansıların ki yaşları ümümu bütün aktyorların yaş ortalamasından böyükdüe
+--(OKAY)Bütün Actors datalarını select edən query - hansıların ki yaşları ümümu bütün aktyorların yaş ortalamasından böyükdüe
 SELECT * FROM Actors WHERE Actors.Age>(SELECT AVG(Actors.Age) FROM Actors)
 
---ActorMovies datalarını select eden query
+--(OKAY)ActorMovies datalarını select eden query
 --bu query əlaqəli Actorsların Name,Surname,Age deyerleri və oynadıqları Movies datalarının adlarını göstərməlidir,
 --yəni selectin resultında Aktyorların  adı,soyadı,yaşı və oynadığı filmin adı olmalıdır.
-SELECT Actors.Name, Actors.Surname, Actors.Age, Movies.Name
-FROM Movies,Actors,ActorMovies WHERE Actors.Id = ActorMovies.ActorId AND ActorMovies.MovieId = Movies.Id
---Hər hansısa bir filmdə oynamış Actors datalarını select edən query,
+SELECT Actors.Name, Actors.Surname,Actors.Age, Movies.Name
+FROM ActorMovies
+JOIN Actors ON ActorId = Actors.Id
+JOIN Movies ON MovieId= Movies.Id
+
+--(OKAY kimi bir şeydi)Hər hansısa bir filmdə oynamış Actors datalarını select edən query,
 --əgər Actor datası heç bir filmdə oynamayıbsa bu selectdə çıxmamalıdır.
 INSERT INTO Actors
 VALUES
 (16, 'Henry', 'Cavill', 38),
 (17, 'Anya', 'Chalotra', 25),
 (18, 'Freya', 'Allan', 20)
-SELECT Actors.Name, Actors.Surname, Actors.Age FROM Actors,Movies,ActorMovies WHERE ActorMovies.ActorId = Actors.Id
+SELECT * FROM Actors, ActorMovies WHERE Actors.Id = ActorMovies.ActorId

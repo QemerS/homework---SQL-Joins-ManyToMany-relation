@@ -1,1 +1,0 @@
-# homework---SQL-Joins-ManyToMany-relation
